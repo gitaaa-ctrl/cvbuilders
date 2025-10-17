@@ -1,14 +1,28 @@
 version: '3.9'
 services:
   db:
-    image: mongo:6
-    ports: ["27017:27017"]
-    volumes: ["mongo_alt:/data/db"]
+    image: mongo:6.0.15
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_alt:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "mongodb://localhost:27017", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   app:
     build: .
+    restart: always
     environment:
-    MONGODB_URI: mongodb://db:27017/cv_alt
-    ports: ["3000:3000"]
-    depends_on: [db]
+      MONGODB_URI: mongodb://db:27017/cv_alt
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
-  mongo_alt
+  mongo_alt:
