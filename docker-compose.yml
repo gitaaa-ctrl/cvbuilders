@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  db:
+    image: mongo:6
+    ports: ["27017:27017"]
+    volumes: ["mongo_alt:/data/db"]
+  app:
+    build: .
+    environment:
+    MONGODB_URI: mongodb://db:27017/cv_alt
+    ports: ["3000:3000"]
+    depends_on: [db]
+volumes:
+  mongo_alt
