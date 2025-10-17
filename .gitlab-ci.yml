@@ -1,0 +1,27 @@
+stages: [setup, verify, compile]
+cache:
+	paths:
+		- node_modules/
+		
+setup_deps:
+	stage: setup
+	image: node:20
+	script:
+		- npm ci
+	artifacts:
+		paths:
+			- node_modules/
+			
+verify_tests:
+	stage: verify
+	image: node:20
+	script:
+		- npm run test
+compile_next:
+	stage: compile
+	image: node:20
+	script:
+		- npm run build
+	artifacts:
+		paths:
+			- .next
